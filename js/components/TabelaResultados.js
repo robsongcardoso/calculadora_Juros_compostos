@@ -64,7 +64,7 @@ export class TabelaResultados {
                 <td>${dado.mes}º mês</td>
                 <td>${formatarMoeda(dado.aporteMes)}</td>
                 <td>${formatarMoeda(dado.rendimentoMes)}</td>
-                <td>${formatarMoeda(dado.rendimentoMes)}</td>
+                <td>${formatarMoeda(dado.rendimentoAcumulado)}</td>
                 <td>${formatarMoeda(dado.montanteAcumulado)}</td>
                 <td>${formatarMoeda(dado.totalInvestido)}</td>
             `;

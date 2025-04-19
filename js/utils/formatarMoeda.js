@@ -9,7 +9,17 @@ export function formatarMoeda(valor) {
 
 export function extrairValorNumerico(valorFormatado) {
     if (!valorFormatado) return 0;
-    return Number(valorFormatado.replace(/[^\d,-]/g, '').replace(',', '.')) || 0;
+    
+    // Remove todos os caracteres exceto números, vírgula e ponto
+    const apenasNumerosEPontuacao = valorFormatado.replace(/[^\d,.]/g, '');
+    
+    // Se tiver vírgula, assume que é o separador decimal
+    if (apenasNumerosEPontuacao.includes(',')) {
+        return parseFloat(apenasNumerosEPontuacao.replace(/\./g, '').replace(',', '.')) || 0;
+    }
+    
+    // Se não tiver vírgula, assume que os pontos são separadores de milhar
+    return parseFloat(apenasNumerosEPontuacao.replace(/\./g, '')) || 0;
 }
 
 export function formatarPorcentagem(valor) {

@@ -26,9 +26,9 @@ export class GraficoPizza {
         const tooltip = document.getElementById(this.tooltipId);
         
         // Configurações do gráfico
-        const centroX = canvas.width / 2;
+        const centroX = canvas.width * 0.6; // Movido mais para a direita para dar espaço à legenda
         const centroY = canvas.height / 2;
-        const raio = Math.max(50, Math.min(centroX, centroY) - 80); // Garantir raio mínimo de 50px
+        const raio = Math.max(50, Math.min(centroX * 0.8, centroY) - 80); // Ajustado para o novo centro
         
         // Calcular o total para percentuais (usar valores absolutos)
         const total = Math.abs(dados.principal || 0) + 
@@ -103,7 +103,7 @@ export class GraficoPizza {
         });
         
         // Adicionar legenda
-        this.desenharLegenda(ctx, fatias, total, canvas.width - 20);
+        this.desenharLegenda(ctx, fatias, total, canvas.width - 20, canvas.height / 2);
         
         // Configurar tooltip
         this.configurarTooltip(canvas, ctx, fatias, total, centroX, centroY, raio, tooltip);
@@ -124,42 +124,48 @@ export class GraficoPizza {
         return `#${novoR.toString(16).padStart(2,'0')}${novoG.toString(16).padStart(2,'0')}${novoB.toString(16).padStart(2,'0')}`;
     }
     
-    desenharLegenda(ctx, fatias, total, larguraMaxima) {
+    desenharLegenda(ctx, fatias, total, larguraMaxima, centroY) {
         const legendaX = 20;
-        let legendaY = 50;
-        const alturaLinha = 25;
-        const larguraLegenda = 180;
+        let legendaY = centroY - ((fatias.length * 30) / 2); // Reduzido o espaço vertical pois teremos menos texto
+        const alturaLinha = 30; // Ajustado o espaçamento entre linhas
+        const larguraLegenda = 200; // Reduzida a largura da legenda
         
-        // Fundo da legenda
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        // Fundo da legenda com mais padding
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+        const paddingLegenda = 15;
         ctx.fillRect(
-            legendaX - 10,
-            legendaY - 10,
-            larguraLegenda,
-            (fatias.length * alturaLinha) + 20
+            legendaX - paddingLegenda,
+            legendaY - paddingLegenda,
+            larguraLegenda + (paddingLegenda * 2),
+            (fatias.length * alturaLinha) + (paddingLegenda * 2)
         );
         ctx.strokeStyle = '#dee2e6';
         ctx.lineWidth = 1;
         ctx.strokeRect(
-            legendaX - 10,
-            legendaY - 10,
-            larguraLegenda,
-            (fatias.length * alturaLinha) + 20
+            legendaX - paddingLegenda,
+            legendaY - paddingLegenda,
+            larguraLegenda + (paddingLegenda * 2),
+            (fatias.length * alturaLinha) + (paddingLegenda * 2)
         );
         
         fatias.forEach((fatia) => {
             // Quadrado colorido
             ctx.fillStyle = fatia.cor;
-            ctx.fillRect(legendaX, legendaY, 15, 15);
+            const tamanhoQuadrado = 16;
+            ctx.fillRect(legendaX, legendaY + 7, tamanhoQuadrado, tamanhoQuadrado);
             
-            // Texto
+            // Texto com fonte maior e melhor espaçamento
             ctx.fillStyle = '#212529';
-            ctx.font = '12px Arial';
+            const espacoAposQuadrado = 30;
+            
+            // Nome do item e percentual
+            const percentual = (fatia.valor / total * 100).toFixed(1);
+            ctx.font = '13px Arial';
             ctx.textAlign = 'left';
             ctx.fillText(
-                `${fatia.nome}: ${formatarMoeda(fatia.valor)}`,
-                legendaX + 25,
-                legendaY + 12
+                `${fatia.nome} (${percentual}%)`,
+                legendaX + espacoAposQuadrado,
+                legendaY + 20
             );
             
             legendaY += alturaLinha;
@@ -193,14 +199,14 @@ export class GraficoPizza {
                 }
                 
                 if (fatiaEncontrada) {
-                    const percentual = (fatiaEncontrada.valor / total * 100).toFixed(2);
+                    const percentual = (fatiaEncontrada.valor / total * 100).toFixed(1);
                     tooltip.style.display = 'block';
-                    tooltip.style.left = (e.clientX - rect.left + 10) + 'px';
-                    tooltip.style.top = (e.clientY - rect.top - 30) + 'px';
+                    tooltip.style.left = (e.clientX + 15) + 'px';
+                    tooltip.style.top = (e.clientY - 40) + 'px';
                     tooltip.innerHTML = `
-                        <div class="fw-bold">${fatiaEncontrada.nome}</div>
-                        <div>Valor: ${formatarMoeda(fatiaEncontrada.valor)}</div>
-                        <div>Percentual: ${percentual}%</div>
+                        <div style="font-weight: bold; margin-bottom: 4px;">${fatiaEncontrada.nome}</div>
+                        <div style="font-size: 14px;">Valor: ${formatarMoeda(fatiaEncontrada.valor)}</div>
+                        <div style="font-size: 14px;">Percentual: ${percentual}%</div>
                     `;
                 }
             } else {

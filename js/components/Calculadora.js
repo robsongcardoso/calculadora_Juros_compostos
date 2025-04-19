@@ -161,22 +161,33 @@ export class Calculadora {
     }
 
     calcular() {
+        console.log('Iniciando cálculos...');
+        
         // Esconder a explicação
         const explicacao = document.getElementById('explicacao');
-        if (explicacao) explicacao.style.display = 'none';
+        if (explicacao) {
+            explicacao.style.display = 'none';
+            console.log('Explicação ocultada');
+        }
 
         // Mostrar a seção de resultados
         const resultado = document.getElementById('resultado');
-        if (resultado) resultado.style.display = 'block';
+        if (resultado) {
+            resultado.style.display = 'block';
+            console.log('Seção de resultados exibida');
+        }
 
         // Obter dados de entrada
         const dados = this.obterDadosEntrada();
+        console.log('Dados de entrada obtidos:', dados);
         
         // Realizar cálculos
         const resultados = this.realizarCalculos(dados);
+        console.log('Cálculos realizados:', resultados);
         
         // Atualizar interface com os resultados
         this.atualizarInterface(resultados);
+        console.log('Interface atualizada');
         
         // Armazenar dados calculados para uso posterior
         this.dadosCalculados = resultados;
@@ -185,15 +196,26 @@ export class Calculadora {
         const dashboardTab = document.querySelector('#dashboard-tab');
         if (dashboardTab) {
             dashboardTab.click();
+            console.log('Dashboard ativado');
         }
     }
 
     obterDadosEntrada() {
-        const valorInicial = extrairValorNumerico(document.getElementById('valorInicial').value) || 0;
-        const aporteMensal = extrairValorNumerico(document.getElementById('aporteMensal').value) || 0;
+        console.log('Obtendo dados de entrada...');
+        
+        const valorInicial = extrairValorNumerico(document.getElementById('valorInicial').value);
+        const aporteMensal = extrairValorNumerico(document.getElementById('aporteMensal').value);
         const periodo = parseInt(document.getElementById('periodo').value) || 0;
         const taxaJuros = parseFloat(document.getElementById('taxaJuros').value) || 0;
         const inflacao = parseFloat(document.getElementById('inflacao').value) || 0;
+        
+        console.log('Valores brutos:', {
+            valorInicial: document.getElementById('valorInicial').value,
+            aporteMensal: document.getElementById('aporteMensal').value,
+            periodo: document.getElementById('periodo').value,
+            taxaJuros: document.getElementById('taxaJuros').value,
+            inflacao: document.getElementById('inflacao').value
+        });
         
         // Converter período para meses se necessário
         const periodoMeses = document.getElementById('tipoPeriodo').value === 'anos' 
@@ -205,13 +227,16 @@ export class Calculadora {
             ? Math.pow(1 + (taxaJuros / 100), 1/12) - 1
             : taxaJuros / 100;
 
-        return {
+        const dadosEntrada = {
             valorInicial,
             aporteMensal,
             periodo: periodoMeses,
-            taxaJuros: taxaMensal * 100, // Convertendo de volta para percentual
+            taxaJuros: taxaMensal * 100,
             taxaInflacao: inflacao
         };
+        
+        console.log('Dados de entrada processados:', dadosEntrada);
+        return dadosEntrada;
     }
 
     realizarCalculos(dadosEntrada) {
@@ -246,6 +271,7 @@ export class Calculadora {
             // Calcular rendimento real (descontando inflação)
             const rendimentoReal = montanteAtual * ((taxaJuros/100) - inflacaoMensal);
             
+            // Adicionar rendimento ao montante
             montanteAtual += rendimentoMes;
 
             // Registrar resultados do mês
@@ -332,11 +358,18 @@ export class Calculadora {
         try {
             // Atualizar gráficos
             if (this.graficoLinha) {
-                this.graficoLinha.atualizar(resultados.dadosGrafico);
+                this.graficoLinha.desenhar(resultados.dadosGrafico);
             }
             
+            // Preparar dados para o gráfico de pizza
+            const dadosPizza = {
+                principal: resultados.dadosGrafico[0].aporteMes,
+                aportes: resultados.totalInvestido - resultados.dadosGrafico[0].aporteMes,
+                juros: resultados.jurosTotais
+            };
+            
             if (this.graficoPizza) {
-                this.graficoPizza.atualizar(resultados.dadosGrafico);
+                this.graficoPizza.desenhar(dadosPizza);
             }
 
             // Atualizar tabela de resultados
@@ -350,9 +383,20 @@ export class Calculadora {
 
     atualizarGraficos(dados) {
         // Atualizar gráfico de linha
-        this.graficoLinha.atualizar(dados);
+        if (this.graficoLinha) {
+            this.graficoLinha.desenhar(dados.dadosGrafico);
+        }
+        
+        // Preparar dados para o gráfico de pizza
+        const dadosPizza = {
+            principal: dados.dadosGrafico[0].aporteMes,
+            aportes: dados.totalInvestido - dados.dadosGrafico[0].aporteMes,
+            juros: dados.jurosTotais
+        };
         
         // Atualizar gráfico de pizza
-        this.graficoPizza.atualizar(dados);
+        if (this.graficoPizza) {
+            this.graficoPizza.desenhar(dadosPizza);
+        }
     }
 } 
