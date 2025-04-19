@@ -292,14 +292,14 @@ export class Calculadora {
         
         // Calcular rentabilidade nominal e real
         const rentabilidade = (jurosTotais / totalInvestido) * 100;
-        const rentabilidadeReal = (((1 + rentabilidade/100) / (1 + taxaInflacao/100)) - 1) * 100;
+        const rentabilidadeReal = ((Math.pow(1 + rentabilidade/100, 1/periodo) / Math.pow(1 + taxaInflacao/100, 1/12)) - 1) * 100 * periodo;
         
         // Calcular renda passiva
         const rendaPassivaBruta = montanteTotal * (taxaJuros / 100);
-        const rendaPassivaLiquida = rendaPassivaBruta / (1 + inflacaoMensal);
+        const rendaPassivaLiquida = montanteTotal * ((taxaJuros/100) - inflacaoMensal);
         
         // Calcular juros reais totais (descontando inflação)
-        const jurosTotaisReais = jurosTotais / (1 + taxaInflacao/100);
+        const jurosTotaisReais = montanteTotal * (1 - (1 / Math.pow(1 + taxaInflacao/100, periodo/12))) - totalInvestido;
 
         console.log('Resultados calculados:', {
             montanteTotal,
