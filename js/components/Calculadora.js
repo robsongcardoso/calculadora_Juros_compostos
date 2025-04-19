@@ -299,12 +299,19 @@ export class Calculadora {
         const rendaPassivaLiquida = montanteTotal * ((taxaJuros/100) - inflacaoMensal);
         
         // Calcular juros reais totais (descontando inflação)
-        const jurosTotaisReais = montanteTotal * (1 - (1 / Math.pow(1 + taxaInflacao/100, periodo/12))) - totalInvestido;
+        const montanteAjustadoInflacao = montanteTotal / Math.pow(1 + taxaInflacao/100, periodo/12);
+        const jurosTotaisReais = montanteAjustadoInflacao - totalInvestido;
+
+        // Calcular juros reais acumulados mês a mês
+        let jurosReaisAcumulados = 0;
+        resultadosMensais.forEach(resultado => {
+            jurosReaisAcumulados += resultado.rendimentoReal;
+        });
 
         console.log('Resultados calculados:', {
             montanteTotal,
             jurosTotais,
-            jurosTotaisReais,
+            jurosTotaisReais: jurosReaisAcumulados,
             totalInvestido,
             rentabilidade,
             rentabilidadeReal,
@@ -315,7 +322,7 @@ export class Calculadora {
         return {
             montanteTotal,
             jurosTotais,
-            jurosTotaisReais,
+            jurosTotaisReais: jurosReaisAcumulados,
             totalInvestido,
             rentabilidade,
             rentabilidadeReal,
