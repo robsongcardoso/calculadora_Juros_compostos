@@ -1,6 +1,5 @@
 import { formatarMoeda, extrairValorNumerico, formatarPorcentagem } from '../utils/formatarMoeda.js';
 import { GraficoLinha } from './graficos/GraficoLinha.js';
-import { GraficoBarra } from './graficos/GraficoBarra.js';
 import { GraficoPizza } from './graficos/GraficoPizza.js';
 import { TabelaResultados } from './TabelaResultados.js';
 
@@ -14,7 +13,6 @@ export class Calculadora {
         
         // Componentes visuais
         this.graficoLinha = new GraficoLinha('graficoLinha-container', 'tooltip-linha');
-        this.graficoBarra = new GraficoBarra('graficoBarra-container', 'tooltip-barra');
         this.graficoPizza = new GraficoPizza('graficoPizza-container', 'tooltip-pizza');
         this.tabela = new TabelaResultados();
         
@@ -153,7 +151,7 @@ export class Calculadora {
                 
                 // Atualizar gráficos se necessário
                 if (this.dadosCalculados) {
-                    const isGraficoTab = ['graficoLinha', 'graficoBarra', 'graficoPizza'].includes(targetId.substring(1));
+                    const isGraficoTab = ['graficoLinha', 'graficoPizza'].includes(targetId.substring(1));
                     if (isGraficoTab) {
                         this.atualizarGraficos(this.dadosCalculados);
                     }
@@ -334,23 +332,11 @@ export class Calculadora {
         try {
             // Atualizar gráficos
             if (this.graficoLinha) {
-                this.graficoLinha.desenhar(resultados.dadosGrafico);
+                this.graficoLinha.atualizar(resultados.dadosGrafico);
             }
-            
-            if (this.graficoBarra) {
-                this.graficoBarra.desenhar(resultados.dadosGrafico);
-            }
-            
-            // Preparar dados para o gráfico de pizza
-            const dadosPizza = {
-                principal: resultados.dadosGrafico[0].aporteMes,
-                aportes: resultados.totalInvestido - resultados.dadosGrafico[0].aporteMes,
-                juros: resultados.jurosTotais
-            };
-            console.log('Dados para o gráfico de pizza:', dadosPizza);
             
             if (this.graficoPizza) {
-                this.graficoPizza.desenhar(dadosPizza);
+                this.graficoPizza.atualizar(resultados.dadosGrafico);
             }
 
             // Atualizar tabela de resultados
@@ -363,27 +349,10 @@ export class Calculadora {
     }
 
     atualizarGraficos(dados) {
-        try {
-            // Atualizar gráfico de linha
-            if (this.graficoLinha) {
-                this.graficoLinha.desenhar(dados.dadosGrafico);
-            }
-            
-            // Atualizar gráfico de barras
-            if (this.graficoBarra) {
-                this.graficoBarra.desenhar(dados.dadosGrafico);
-            }
-            
-            // Atualizar gráfico de pizza
-            if (this.graficoPizza) {
-                this.graficoPizza.desenhar({
-                    principal: dados.dadosGrafico[0].aporteMes,
-                    aportes: dados.totalInvestido - dados.dadosGrafico[0].aporteMes,
-                    juros: dados.jurosTotais
-                });
-            }
-        } catch (erro) {
-            console.error('Erro ao atualizar gráficos:', erro);
-        }
+        // Atualizar gráfico de linha
+        this.graficoLinha.atualizar(dados);
+        
+        // Atualizar gráfico de pizza
+        this.graficoPizza.atualizar(dados);
     }
 } 
