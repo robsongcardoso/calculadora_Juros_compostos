@@ -85,6 +85,8 @@ export class Calculadora {
 
     validarFormulario() {
         let isValido = true;
+        let temValorInicial = false;
+        let temAporteMensal = false;
 
         this.camposObrigatorios.forEach(campo => {
             const elemento = document.getElementById(campo);
@@ -93,17 +95,40 @@ export class Calculadora {
             let valor;
             if (campo === 'valorInicial' || campo === 'aporteMensal') {
                 valor = extrairValorNumerico(elemento.value);
+                if (campo === 'valorInicial' && valor > 0) temValorInicial = true;
+                if (campo === 'aporteMensal' && valor > 0) temAporteMensal = true;
             } else {
                 valor = Number(elemento.value);
             }
 
-            if (valor === null || isNaN(valor) || valor < 0) {
+            // Validação específica para valor inicial e aporte mensal
+            if ((campo === 'valorInicial' || campo === 'aporteMensal')) {
+                if (valor === null || isNaN(valor) || valor < 0) {
+                    elemento.classList.add('is-invalid');
+                    isValido = false;
+                } else {
+                    elemento.classList.remove('is-invalid');
+                }
+            } 
+            // Validação para outros campos
+            else if (valor === null || isNaN(valor) || valor < 0) {
                 elemento.classList.add('is-invalid');
                 isValido = false;
             } else {
                 elemento.classList.remove('is-invalid');
             }
         });
+
+        // Verificar se pelo menos um dos valores está preenchido
+        if (!temValorInicial && !temAporteMensal) {
+            const valorInicialElement = document.getElementById('valorInicial');
+            const aporteMensalElement = document.getElementById('aporteMensal');
+            
+            if (valorInicialElement) valorInicialElement.classList.add('is-invalid');
+            if (aporteMensalElement) aporteMensalElement.classList.add('is-invalid');
+            
+            isValido = false;
+        }
 
         return isValido;
     }
@@ -258,6 +283,7 @@ export class Calculadora {
         const inflacaoMensal = Math.pow(1 + taxaInflacao/100, 1/12) - 1;
 
         // Calcular resultados mês a mês
+        let jurosAcumulados = 0;
         for (let mes = 1; mes <= periodo; mes++) {
             // Adicionar aporte mensal (exceto no primeiro mês)
             if (mes > 1) {
@@ -267,6 +293,9 @@ export class Calculadora {
 
             // Calcular rendimentos do mês
             const rendimentoMes = montanteAtual * (taxaJuros / 100);
+            
+            // Acumular juros
+            jurosAcumulados += rendimentoMes;
             
             // Calcular rendimento real (descontando inflação)
             const rendimentoReal = montanteAtual * ((taxaJuros/100) - inflacaoMensal);
@@ -282,6 +311,7 @@ export class Calculadora {
                 rendimentoMes,
                 rendimentoReal,
                 totalInvestido: totalInvestido,
+                jurosAcumulados: jurosAcumulados,
                 percentualJuros: ((montanteAtual - totalInvestido) / totalInvestido) * 100
             });
         }

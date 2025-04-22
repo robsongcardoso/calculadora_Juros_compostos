@@ -168,7 +168,7 @@
                                 <input type="text" class="form-control" id="valorInicial" required 
                                     aria-describedby="valorInicialFeedback">
                                 <div id="valorInicialFeedback" class="invalid-feedback">
-                                    Informe um valor inicial válido maior ou igual a zero.
+                                    Informe um valor inicial válido ou preencha o aporte mensal.
                                 </div>
                             </div>
                         </div>
@@ -180,7 +180,7 @@
                                 <input type="text" class="form-control" id="aporteMensal" required
                                     aria-describedby="aporteMensalFeedback">
                                 <div id="aporteMensalFeedback" class="invalid-feedback">
-                                    Informe um valor de aporte mensal válido maior ou igual a zero.
+                                    Informe um aporte mensal válido ou preencha o valor inicial.
                                 </div>
                             </div>
                         </div>
@@ -455,12 +455,13 @@
                                         <table id="tabela" class="table table-striped table-hover table-stats">
                                             <thead class="table-light">
                                                 <tr>
-                                                    <th>Período</th>
-                                                    <th>Aporte</th>
-                                                    <th>Juros no Mês</th>
-                                                    <th>Juros Real</th>
-                                                    <th>Total no Mês</th>
-                                                    <th>Total Acumulado</th>
+                                                    <th>Mês</th>
+                                                    <th>Aporte Mensal</th>
+                                                    <th>Aportes Acumulados</th>
+                                                    <th>Rendimento Mensal</th>
+                                                    <th>Rendimento Mensal - Inflação</th>
+                                                    <th>Patrimônio Acumulado + Juros</th>
+                                                    <th>Patrimônio Acumulado - Inflação</th>
                                                 </tr>
                                             </thead>
                                             <tbody></tbody>
