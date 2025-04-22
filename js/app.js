@@ -12,18 +12,52 @@ function inicializarAplicacao() {
         
         // Armazena a instância globalmente para debug
         window.calculadora = calculadora;
+
+        // Configura máscaras para campos monetários
+        const camposMonetarios = ['valorInicial', 'aporteMensal'];
+        camposMonetarios.forEach(id => {
+            const element = document.getElementById(id);
+            IMask(element, {
+                mask: 'R$ num',
+                blocks: {
+                    num: {
+                        mask: Number,
+                        thousandsSeparator: '.',
+                        radix: ',',
+                        scale: 2,
+                        padFractionalZeros: true,
+                        normalizeZeros: true,
+                        min: 0
+                    }
+                }
+            });
+        });
         
         // Configura o evento de cálculo
         document.getElementById('calcular').addEventListener('click', () => {
-            const valorInicial = parseFloat(document.getElementById('valorInicial').value) || 0;
-            const aporteMensal = parseFloat(document.getElementById('aporteMensal').value) || 0;
-            const periodo = parseInt(document.getElementById('periodo').value) || 0;
-            const taxaJuros = parseFloat(document.getElementById('taxaJuros').value) || 0;
-            const inflacao = parseFloat(document.getElementById('inflacao').value) || 0;
-            const tipoTaxaJuros = document.getElementById('tipoTaxaJuros').value;
-            const tipoPeriodo = document.getElementById('tipoPeriodo').value;
-
             try {
+                // Obtém os valores dos campos
+                const valorInicialMask = IMask.createMask({
+                    mask: 'R$ num',
+                    blocks: {
+                        num: {
+                            mask: Number,
+                            thousandsSeparator: '.',
+                            radix: ',',
+                            scale: 2
+                        }
+                    }
+                });
+                
+                // Converte os valores para número
+                const valorInicial = valorInicialMask.resolve(document.getElementById('valorInicial').value) || 0;
+                const aporteMensal = valorInicialMask.resolve(document.getElementById('aporteMensal').value) || 0;
+                const periodo = parseInt(document.getElementById('periodo').value) || 0;
+                const taxaJuros = parseFloat(document.getElementById('taxaJuros').value) || 0;
+                const inflacao = parseFloat(document.getElementById('inflacao').value) || 0;
+                const tipoTaxaJuros = document.getElementById('tipoTaxaJuros').value;
+                const tipoPeriodo = document.getElementById('tipoPeriodo').value;
+
                 // Calcula os resultados
                 const resultados = calculadora.calcular({
                     valorInicial,

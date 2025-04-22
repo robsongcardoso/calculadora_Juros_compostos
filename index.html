@@ -166,6 +166,7 @@
                             <div class="input-group has-validation">
                                 <span class="input-group-text"><i class="bi bi-cash"></i></span>
                                 <input type="text" class="form-control" id="valorInicial" required 
+                                    inputmode="numeric" placeholder="R$ 0,00"
                                     aria-describedby="valorInicialFeedback">
                                 <div id="valorInicialFeedback" class="invalid-feedback">
                                     Informe um valor inicial válido ou preencha o aporte mensal.
@@ -178,6 +179,7 @@
                             <div class="input-group has-validation">
                                 <span class="input-group-text"><i class="bi bi-piggy-bank"></i></span>
                                 <input type="text" class="form-control" id="aporteMensal" required
+                                    inputmode="numeric" placeholder="R$ 0,00"
                                     aria-describedby="aporteMensalFeedback">
                                 <div id="aporteMensalFeedback" class="invalid-feedback">
                                     Informe um aporte mensal válido ou preencha o valor inicial.
@@ -508,6 +510,9 @@
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- IMask.js para formatação de números -->
+    <script src="https://unpkg.com/imask"></script>
 
     <!-- Módulos da aplicação -->
     <script type="module" src="js/app.js"></script>
