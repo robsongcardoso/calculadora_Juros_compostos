@@ -23,20 +23,6 @@ function inicializarAplicacao() {
             const tipoTaxaJuros = document.getElementById('tipoTaxaJuros').value;
             const tipoPeriodo = document.getElementById('tipoPeriodo').value;
 
-            // Valida os dados
-            if (!valorInicial && !aporteMensal) {
-                alert('Informe pelo menos o valor inicial ou o aporte mensal');
-                return;
-            }
-            if (!periodo) {
-                alert('Informe o período');
-                return;
-            }
-            if (!taxaJuros) {
-                alert('Informe a taxa de juros');
-                return;
-            }
-
             try {
                 // Calcula os resultados
                 const resultados = calculadora.calcular({
