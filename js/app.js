@@ -136,8 +136,17 @@ function inicializarAplicacao() {
         }
 
         function preencherExemplo() {
-            if (mascaras['valorInicial']) mascaras['valorInicial'].value = '500000'; // R$ 5.000,00
-            if (mascaras['aporteMensal']) mascaras['aporteMensal'].value = '50000';  // R$ 500,00
+            if (mascaras['valorInicial']) {
+                mascaras['valorInicial'].unmaskedValue = '1000';
+            } else {
+                document.getElementById('valorInicial').value = 'R$ 1.000,00';
+            }
+
+            if (mascaras['aporteMensal']) {
+                mascaras['aporteMensal'].unmaskedValue = '200';
+            } else {
+                document.getElementById('aporteMensal').value = 'R$ 200,00';
+            }
 
             campoTaxaJuros.value = '10.5';
             campoTipoTaxa.value = 'anual';
@@ -155,8 +164,8 @@ function inicializarAplicacao() {
         }
 
         function limparCampos() {
-            if (mascaras['valorInicial']) mascaras['valorInicial'].value = '';
-            if (mascaras['aporteMensal']) mascaras['aporteMensal'].value = '';
+            if (mascaras['valorInicial']) mascaras['valorInicial'].unmaskedValue = '';
+            if (mascaras['aporteMensal']) mascaras['aporteMensal'].unmaskedValue = '';
 
             campoTaxaJuros.value = '';
             campoInflacao.value = '';

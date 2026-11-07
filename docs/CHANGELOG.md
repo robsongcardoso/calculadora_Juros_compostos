@@ -4,6 +4,13 @@ Todas as modificações relevantes implementadas no projeto estão documentadas 
 
 ---
 
+## [2.0.1] - 2026-11-07
+
+### 🎨 Ajustes de Parâmetros e UX
+- **Valores do Exemplo Padrão:** Atualizado o cenário inicial de exemplo para **R$ 1.000,00** de valor inicial e **R$ 200,00** de aporte mensal (mantendo prazo de 5 anos, juros de 10,5% a.a., inflação de 4,0% a.a. e IR regressivo).
+
+---
+
 ## [2.0.0] - 2026-11-07
 
 ### 🚀 Novas Funcionalidades
