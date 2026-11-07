@@ -5,311 +5,177 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Juros Compostos</title>
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDMyIDMyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogPHJlY3QgeD0iNCIgeT0iNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiByeD0iMiIgcnk9IjIiIGZpbGw9IiMwZDZlZmQiLz4KIDxyZWN0IHg9IjYiIHk9IjYiIHdpZHRoPSIyMCIgaGVpZ2h0PSI1IiByeD0iLjUiIHJ5PSIuNSIgZmlsbD0iI2ZmZiIvPgogPGcgZmlsbD0iI2ZmZiI+CiAgPHJlY3QgeD0iNiIgeT0iMTMiIHdpZHRoPSI1IiBoZWlnaHQ9IjMiIHJ4PSIuNSIgcnk9Ii41Ii8+CiAgPHJlY3QgeD0iMTMuNSIgeT0iMTMiIHdpZHRoPSI1IiBoZWlnaHQ9IjMiIHJ4PSIuNSIgcnk9Ii41Ii8+CiAgPHJlY3QgeD0iMjEiIHk9IjEzIiB3aWR0aD0iNSIgaGVpZ2h0PSIzIiByeD0iLjUiIHJ5PSIuNSIvPgogIDxyZWN0IHg9IjYiIHk9IjE4IiB3aWR0aD0iNSIgaGVpZ2h0PSIzIiByeD0iLjUiIHJ5PSIuNSIvPgogIDxyZWN0IHg9IjEzLjUiIHk9IjE4IiB3aWR0aD0iNSIgaGVpZ2h0PSIzIiByeD0iLjUiIHJ5PSIuNSIvPgogIDxyZWN0IHg9IjIxIiB5PSIxOCIgd2lkdGg9IjUiIGhlaWdodD0iMyIgcng9Ii41IiByeT0iLjUiLz4KICA8cmVjdCB4PSI2IiB5PSIyMyIgd2lkdGg9IjUiIGhlaWdodD0iMyIgcng9Ii41IiByeT0iLjUiLz4KICA8cmVjdCB4PSIxMy41IiB5PSIyMyIgd2lkdGg9IjUiIGhlaWdodD0iMyIgcng9Ii41IiByeT0iLjUiLz4KICA8cmVjdCB4PSIyMSIgeT0iMjMiIHdpZHRoPSI1IiBoZWlnaHQ9IjMiIHJ4PSIuNSIgcnk9Ii41Ii8+CiA8L2c+Cjwvc3ZnPg==">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDMyIDMyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogPHJlY3QgeD0iNCIgeT0iNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiByeD0iMiIgcnk9IjIiIGZpbGw9IiMwZDZlZmQiLz4KIDxyZWN0IHg9IjYiIHk9IjYiIHdpZHRoPSIyMCIgaGVpZ2h0PSI1IiByeD0iLjUiIHJ5PSIuNSIgZmlsbD0iI2ZmZiIvPgogPGcgZmlsbD0iI2ZmZiI+CiAgPHJlY3QgeD0iNiIgeT0iMTMiIHdpZHRoPSI1IiBoZWlnaHQ9IjMiIHJ4PSIuNSIgcnk9IjAuNSIvPgogIDxyZWN0IHg9IjEzLjUiIHk9IjEzIiB3aWR0aD0iNSIgaGVpZ2h0PSIzIiByeD0iMC41IiByeT0iMC41Ii8+CiAgPHJlY3QgeD0iMjEiIHk9IjEzIiB3aWR0aD0iNSIgaGVpZ2h0PSIzIiByeD0iMC41IiByeT0iMC41Ii8+CiAgPHJlY3QgeD0iNiIgeT0iMTgiIHdpZHRoPSI1IiBoZWlnaHQ9IjMiIHJ4PSIwLjUiIHJ5PSIwLjUiLz4KICA8cmVjdCB4PSIxMy41IiB5PSIxOCIgd2lkdGg9IjUiIGhlaWdodD0iMyIgcng9IjAuNSIgcnk9IjAuNSIvPgogIDxyZWN0IHg9IjIxIiB5PSIxOCIgd2lkdGg9IjUiIGhlaWdodD0iMyIgcng9IjAuNSIgcnk9IjAuNSIvPgogIDxyZWN0IHg9IjYiIHk9IjIzIiB3aWR0aD0iNSIgaGVpZ2h0PSIzIiByeD0iMC41IiByeT0iMC41Ii8+CiAgPHJlY3QgeD0iMTMuNSIgeT0iMjMiIHdpZHRoPSI1IiBoZWlnaHQ9IjMiIHJ4PSIwLjUiIHJ5PSIwLjUiLz4KICA8cmVjdCB4PSIyMSIgeT0iMjMiIHdpZHRoPSI1IiBoZWlnaHQ9IjMiIHJ4PSIwLjUiIHJ5PSIwLjUiLz4KIDwvZz4KPC9zdmc+">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <!-- Custom CSS -->
+    <!-- Custom CSS unificado -->
     <link rel="stylesheet" href="css/styles.css">
-    <style>
-        :root {
-            --primary: #0d6efd;
-            --secondary: #6c757d;
-            --success: #198754;
-            --info: #0dcaf0;
-            --warning: #ffc107;
-            --danger: #dc3545;
-        }
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .card {
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            margin-bottom: 1.5rem;
-        }
-        .card-header {
-            background-color: rgba(13, 110, 253, 0.1);
-            font-weight: 500;
-        }
-        .form-label {
-            font-weight: 500;
-            margin-bottom: 0.35rem;
-        }
-        .grafico {
-            width: 100%;
-            height: 400px;
-            background-color: #fff;
-            border-radius: 0.375rem;
-            position: relative;
-        }
-        .tooltip-custom {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            pointer-events: none;
-            display: none;
-            z-index: 100;
-        }
-        .nav-tabs .nav-link {
-            cursor: pointer;
-        }
-        .nav-tabs .nav-link.active {
-            font-weight: 500;
-        }
-        .table-stats {
-            font-size: 0.9rem;
-        }
-        .table-stats th {
-            background-color: rgba(13, 110, 253, 0.05);
-        }
-        .result-card {
-            transition: all 0.3s ease;
-        }
-        .summary-item {
-            padding: 1rem;
-            border-radius: 0.375rem;
-            margin-bottom: 1rem;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-height: 140px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .summary-item .content,
-        .summary-item .explanation {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            padding: 1rem;
-        }
-
-        .summary-item .explanation {
-            opacity: 0;
-            transform: translateY(100%);
-            font-size: 0.9rem;
-            text-align: center;
-            line-height: 1.4;
-        }
-
-        .summary-item:hover .content {
-            opacity: 0;
-            transform: translateY(-100%);
-        }
-
-        .summary-item:hover .explanation {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .summary-item.total {
-            background-color: var(--primary);
-        }
-        .summary-item.juros {
-            background-color: var(--success);
-        }
-        .summary-item.investido {
-            background-color: var(--info);
-        }
-        .summary-item.rentabilidade {
-            background-color: var(--warning);
-            color: #212529;
-        }
-        .summary-item h5 {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        .summary-item p {
-            font-size: 1.25rem;
-            font-weight: 500;
-            margin-bottom: 0;
-        }
-        .summary-item i {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-    </style>
 </head>
 <body>
     <div class="container py-4">
-        <div class="row">
-            <div class="col-12 text-center mb-4">
-                <h1 class="display-5 fw-bold text-primary">Calculadora de Juros Compostos</h1>
-                <p class="lead">Simule seus investimentos e veja o poder dos juros compostos</p>
-            </div>
-        </div>
+        <!-- Cabeçalho -->
+        <header class="text-center mb-4">
+            <h1 class="display-6 fw-bold text-primary mb-2">Calculadora de Juros Compostos</h1>
+            <p class="text-muted lead fs-6">Simule o crescimento dos seus investimentos com juros reais, inflação e imposto de renda</p>
+        </header>
 
-        <div class="row">
-            <div class="col-lg-4 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <i class="bi bi-gear-fill me-2"></i>Parâmetros da Simulação
+        <div class="row g-4">
+            <!-- Coluna de Entrada de Dados -->
+            <div class="col-lg-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-sliders2-vertical me-2 text-primary"></i>Parâmetros</span>
+                        <button type="button" id="btn-exemplo" class="btn btn-sm btn-outline-primary" title="Preencher com valores de exemplo">
+                            <i class="bi bi-magic me-1"></i>Exemplo
+                        </button>
                     </div>
                     <div class="card-body">
-                        <div class="mb-3">
-                            <label for="valorInicial" class="form-label">Valor Inicial (R$) *</label>
-                            <div class="input-group has-validation">
-                                <span class="input-group-text"><i class="bi bi-cash"></i></span>
-                                <input type="text" class="form-control" id="valorInicial" required 
-                                    inputmode="numeric" placeholder="R$ 0,00" data-min-value="0"
-                                    aria-describedby="valorInicialFeedback">
-                                <div id="valorInicialFeedback" class="invalid-feedback">
-                                    Informe um valor inicial maior que zero.
+                        <form id="form-calculadora" novalidate>
+                            <!-- Valor Inicial -->
+                            <div class="mb-3">
+                                <label for="valorInicial" class="form-label">Valor Inicial</label>
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text"><i class="bi bi-wallet2"></i></span>
+                                    <input type="text" class="form-control" id="valorInicial" required 
+                                        inputmode="numeric" placeholder="R$ 0,00" aria-describedby="valorInicialFeedback">
+                                    <div id="valorInicialFeedback" class="invalid-feedback">
+                                        Informe um valor inicial válido (igual ou maior que zero).
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="aporteMensal" class="form-label">Aporte Mensal (R$) *</label>
-                            <div class="input-group has-validation">
-                                <span class="input-group-text"><i class="bi bi-piggy-bank"></i></span>
-                                <input type="text" class="form-control" id="aporteMensal" required
-                                    inputmode="numeric" placeholder="R$ 0,00" data-min-value="0"
-                                    aria-describedby="aporteMensalFeedback">
-                                <div id="aporteMensalFeedback" class="invalid-feedback">
-                                    Informe um aporte mensal igual ou maior que zero.
+                            
+                            <!-- Aporte Mensal -->
+                            <div class="mb-3">
+                                <label for="aporteMensal" class="form-label">Aporte Mensal</label>
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text"><i class="bi bi-piggy-bank"></i></span>
+                                    <input type="text" class="form-control" id="aporteMensal" required
+                                        inputmode="numeric" placeholder="R$ 0,00" aria-describedby="aporteMensalFeedback">
+                                    <div id="aporteMensalFeedback" class="invalid-feedback">
+                                        Informe um aporte mensal válido (igual ou maior que zero).
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="taxaJuros" class="form-label">Taxa de Juros (%) *</label>
-                            <div class="input-group has-validation">
-                                <span class="input-group-text"><i class="bi bi-percent"></i></span>
-                                <input type="number" class="form-control" id="taxaJuros" 
-                                    min="0.01" step="any" required
-                                    aria-describedby="taxaJurosFeedback">
-                                <select id="tipoTaxaJuros" class="form-select" style="max-width: 110px;">
-                                    <option value="mensal">Mensal</option>
-                                    <option value="anual">Anual</option>
-                                </select>
-                                <div id="taxaJurosFeedback" class="invalid-feedback">
-                                    Informe uma taxa de juros válida.
+                            
+                            <!-- Taxa de Juros -->
+                            <div class="mb-3">
+                                <label for="taxaJuros" class="form-label">Taxa de Rendimento / Juros (%)</label>
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text"><i class="bi bi-percent"></i></span>
+                                    <input type="number" class="form-control" id="taxaJuros" step="any" required
+                                        placeholder="10.0" aria-describedby="taxaJurosFeedback">
+                                    <select id="tipoTaxaJuros" class="form-select" style="max-width: 110px;">
+                                        <option value="anual" selected>ao ano</option>
+                                        <option value="mensal">ao mês</option>
+                                    </select>
+                                    <div id="taxaJurosFeedback" class="invalid-feedback">
+                                        Informe uma taxa de juros válida.
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="inflacao" class="form-label">Inflação (% ao ano) *</label>
-                            <div class="input-group has-validation">
-                                <span class="input-group-text"><i class="bi bi-graph-up-arrow"></i></span>
-                                <input type="number" class="form-control" id="inflacao" 
-                                    min="0.01" step="any" required
-                                    aria-describedby="inflacaoFeedback">
-                                <div id="inflacaoFeedback" class="invalid-feedback">
-                                    Informe uma taxa de inflação válida.
+                            
+                            <!-- Inflação Anual -->
+                            <div class="mb-3">
+                                <label for="inflacao" class="form-label">Inflação Estimada (% ao ano)</label>
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text"><i class="bi bi-graph-up-arrow"></i></span>
+                                    <input type="number" class="form-control" id="inflacao" step="any" min="0" required
+                                        placeholder="4.0" aria-describedby="inflacaoFeedback">
+                                    <div id="inflacaoFeedback" class="invalid-feedback">
+                                        Informe a inflação anual estimada (zero ou positiva).
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="periodo" class="form-label">Período *</label>
-                            <div class="input-group has-validation">
-                                <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
-                                <input type="number" class="form-control" id="periodo" 
-                                    min="1" step="1" required
-                                    aria-describedby="periodoFeedback">
-                                <select id="tipoPeriodo" class="form-select" style="max-width: 110px;">
-                                    <option value="meses">Meses</option>
-                                    <option value="anos">Anos</option>
-                                </select>
-                                <div id="periodoFeedback" class="invalid-feedback">
-                                    O período deve ser maior que zero e não pode ultrapassar 1440 meses ou 120 anos.
+                            
+                            <!-- Período -->
+                            <div class="mb-3">
+                                <label for="periodo" class="form-label">Prazo / Período</label>
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+                                    <input type="number" class="form-control" id="periodo" min="1" step="1" required
+                                        placeholder="5" aria-describedby="periodoFeedback">
+                                    <select id="tipoPeriodo" class="form-select" style="max-width: 110px;">
+                                        <option value="anos" selected>Anos</option>
+                                        <option value="meses">Meses</option>
+                                    </select>
+                                    <div id="periodoFeedback" class="invalid-feedback">
+                                        O período deve ser maior que zero (máx 120 anos).
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="text-muted small mb-3">* Campos obrigatórios</div>
-                        
-                        <button id="calcular" class="btn btn-primary w-100">
-                            <i class="bi bi-calculator me-2"></i>Calcular
-                        </button>
+
+                            <!-- Imposto de Renda -->
+                            <div class="mb-4">
+                                <label for="tipoIR" class="form-label">Tributação (Imposto de Renda)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-shield-check"></i></span>
+                                    <select id="tipoIR" class="form-select">
+                                        <option value="regressivo" selected>Tabela Regressiva (Renda Fixa: 22,5% a 15%)</option>
+                                        <option value="isento">Isento de IR (LCI, LCA, Poupança)</option>
+                                        <option value="fixo_15">Alíquota Fixa 15% (Ações/Fundos Longo Prazo)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Botões de Ação -->
+                            <div class="d-grid gap-2">
+                                <button type="button" id="calcular" class="btn btn-primary py-2 fw-semibold">
+                                    <i class="bi bi-calculator me-2"></i>Calcular Simulação
+                                </button>
+                                <button type="button" id="btn-limpar" class="btn btn-outline-secondary py-1 btn-sm">
+                                    <i class="bi bi-trash3 me-1"></i>Limpar Campos
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
             
-            <div class="col-lg-8 mb-4">
+            <!-- Coluna de Resultados / Visualização -->
+            <div class="col-lg-8">
+                <!-- Painel Explicativo Inicial (caso não haja cálculo) -->
                 <div id="explicacao" class="card">
                     <div class="card-header">
-                        <i class="bi bi-info-circle-fill me-2"></i>Como Funciona a Calculadora
+                        <i class="bi bi-info-circle me-2 text-primary"></i>Como Funciona esta Calculadora
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title mb-3">Fórmulas Utilizadas</h5>
+                        <h5 class="card-title fw-bold text-dark mb-3">Metodologia e Fórmulas Financeiras</h5>
                         
-                        <div class="mb-4">
-                            <h6 class="fw-bold">Juros Compostos Básicos</h6>
-                            <p>Para um valor inicial <code>P</code>, taxa de juros <code>i</code> e número de períodos <code>n</code>:</p>
-                            <div class="bg-light p-2 mb-2 rounded">
-                                <p class="mb-0 text-center">Montante = P × (1 + i)<sup>n</sup></p>
-                            </div>
-                            <p>Esta fórmula é aplicada repetidamente a cada período, adicionando o aporte mensal.</p>
+                        <div class="mb-3">
+                            <h6 class="fw-bold text-primary">1. Juros Compostos com Aportes Mensais</h6>
+                            <p class="text-secondary small mb-1">
+                                O rendimento mensal incide sobre o saldo acumulado acrescido do aporte mensal. A conversão de taxa anual para mensal é feita de forma composta:
+                            </p>
+                            <code class="d-block bg-light p-2 rounded text-dark text-center my-2">Taxa Mensal = (1 + Taxa Anual)^(1/12) - 1</code>
                         </div>
                         
-                        <div class="mb-4">
-                            <h6 class="fw-bold">Conversão de Taxa Anual para Mensal</h6>
-                            <p>Quando você seleciona uma taxa anual, ela é convertida para mensal:</p>
-                            <div class="bg-light p-2 mb-2 rounded">
-                                <p class="mb-0 text-center">Taxa Mensal = (1 + Taxa Anual)<sup>1/12</sup> - 1</p>
-                            </div>
+                        <div class="mb-3">
+                            <h6 class="fw-bold text-primary">2. Rendimento Real e Equação de Fisher</h6>
+                            <p class="text-secondary small mb-1">
+                                A taxa real desconta o impacto da inflação exatamente segundo a Equação de Fisher, medindo o ganho real de poder de compra:
+                            </p>
+                            <code class="d-block bg-light p-2 rounded text-dark text-center my-2">Taxa Real = (1 + Taxa Nominal) / (1 + Inflação) - 1</code>
                         </div>
-                        
-                        <div class="mb-4">
-                            <h6 class="fw-bold">Cálculo dos Juros Reais (Descontando a Inflação)</h6>
-                            <p>Para considerar o efeito da inflação, calculamos mês a mês:</p>
-                            <div class="bg-light p-2 mb-2 rounded">
-                                <p class="mb-0 text-center">Juros Reais Mensais = Montante × (Taxa Nominal - Taxa de Inflação Mensal)</p>
-                            </div>
-                            <p>A taxa de inflação anual é convertida para mensal da mesma forma que a taxa de juros. Os juros reais totais são a soma dos juros reais de cada mês.</p>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <h6 class="fw-bold">Efeito dos Impostos</h6>
-                            <p>Os impostos são aplicados sobre o rendimento (juros):</p>
-                            <div class="bg-light p-2 mb-2 rounded">
-                                <p class="mb-0 text-center">Juros Após Impostos = Juros × (1 - Taxa de Impostos)</p>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <h6 class="fw-bold">Rentabilidade</h6>
-                            <p>A rentabilidade é calculada com base nos valores investidos e no montante final:</p>
-                            <div class="bg-light p-2 mb-2 rounded">
-                                <p class="mb-0 text-center">Rentabilidade = (Montante Final - Total Investido) / Total Investido × 100%</p>
-                            </div>
-                        </div>
-                        
+
                         <div>
-                            <h6 class="fw-bold">Rentabilidade Real</h6>
-                            <p>A rentabilidade real desconta o efeito da inflação:</p>
-                            <div class="bg-light p-2 mb-2 rounded">
-                                <p class="mb-0 text-center">Rentabilidade Real = [(1 + Rentabilidade/100) / (1 + Inflação) - 1] × 100%</p>
-                            </div>
+                            <h6 class="fw-bold text-primary">3. Imposto de Renda Regressivo</h6>
+                            <p class="text-secondary small mb-0">
+                                O imposto incide unicamente sobre o rendimento bruto (lucro) do período, variando de 22,5% (até 180 dias) até 15% (acima de 720 dias).
+                            </p>
                         </div>
                     </div>
                 </div>
                 
+                <!-- Resultados Dinâmicos -->
                 <div id="resultado" style="display: none;">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header pb-0 border-bottom-0">
                             <ul class="nav nav-tabs card-header-tabs" role="tablist">
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">
-                                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                                        <i class="bi bi-speedometer2 me-1"></i>Resumo
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
@@ -324,117 +190,133 @@
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="tabela-tab" data-bs-toggle="tab" data-bs-target="#conteudoTabela" type="button" role="tab">
-                                        <i class="bi bi-table me-1"></i>Detalhamento
+                                        <i class="bi bi-table me-1"></i>Tabela Mensal
                                     </button>
                                 </li>
                             </ul>
                         </div>
                         <div class="card-body">
-                            <div class="tab-content">
-                                <!-- Dashboard -->
+                            <div class="tab-content pt-2">
+                                <!-- Dashboard / Resumo -->
                                 <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
-                                    <div class="row g-4">
-                                        <!-- Valores Totais -->
+                                    <div class="row g-3">
+                                        <!-- Montante Líquido Final (Destaque Principal) -->
                                         <div class="col-md-6">
-                                            <div class="summary-item investido text-center">
-                                                <div class="content">
-                                                    <i class="bi bi-cash-stack"></i>
-                                                    <h5>Total Investido</h5>
-                                                    <p id="resumo-investido">R$ 0,00</p>
+                                            <div class="metric-card highlight">
+                                                <div class="metric-header">
+                                                    <span class="metric-title">Montante Líquido Final</span>
+                                                    <i class="bi bi-award metric-icon"></i>
                                                 </div>
-                                                <div class="explanation">
-                                                    Soma do valor inicial mais todos os aportes mensais realizados durante o período
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="summary-item total text-center">
-                                                <div class="content">
-                                                    <i class="bi bi-wallet2"></i>
-                                                    <h5>Montante Final</h5>
-                                                    <p id="resumo-montante">R$ 0,00</p>
-                                                </div>
-                                                <div class="explanation">
-                                                    Valor total acumulado incluindo o capital investido e todos os juros ganhos
-                                                </div>
+                                                <div class="metric-value" id="resumo-montante-liquido">R$ 0,00</div>
+                                                <div class="metric-subtitle">Valor total já descontando o Imposto de Renda</div>
                                             </div>
                                         </div>
 
-                                        <!-- Rentabilidade -->
+                                        <!-- Montante Bruto Total -->
                                         <div class="col-md-6">
-                                            <div class="summary-item rentabilidade text-center">
-                                                <div class="content">
-                                                    <i class="bi bi-percent"></i>
-                                                    <h5>Rentabilidade Nominal</h5>
-                                                    <p id="resumo-rentabilidade">0,00%</p>
+                                            <div class="metric-card">
+                                                <div class="metric-header">
+                                                    <span class="metric-title">Montante Bruto</span>
+                                                    <i class="bi bi-wallet2 text-primary metric-icon"></i>
                                                 </div>
-                                                <div class="explanation">
-                                                    Percentual de retorno bruto sobre o valor total investido, sem considerar a inflação
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="summary-item rentabilidade-real text-center" style="background-color: #e9a800;">
-                                                <div class="content">
-                                                    <i class="bi bi-graph-up-arrow"></i>
-                                                    <h5>Rentabilidade Real</h5>
-                                                    <p id="resumo-rentabilidade-real">0,00%</p>
-                                                </div>
-                                                <div class="explanation">
-                                                    Percentual de retorno real sobre o valor investido, já descontando a perda do poder de compra causada pela inflação
-                                                </div>
+                                                <div class="metric-value" id="resumo-montante">R$ 0,00</div>
+                                                <div class="metric-subtitle">Capital investido + rendimento bruto total</div>
                                             </div>
                                         </div>
 
-                                        <!-- Detalhamento dos Juros -->
-                                        <div class="col-md-6">
-                                            <div class="summary-item juros text-center">
-                                                <div class="content">
-                                                    <i class="bi bi-graph-up"></i>
-                                                    <h5>Juros Brutos Acumulados</h5>
-                                                    <p id="resumo-juros-brutos">R$ 0,00</p>
+                                        <!-- Total Investido -->
+                                        <div class="col-md-4">
+                                            <div class="metric-card">
+                                                <div class="metric-header">
+                                                    <span class="metric-title">Total Investido</span>
+                                                    <i class="bi bi-cash-stack text-success metric-icon"></i>
                                                 </div>
-                                                <div class="explanation">
-                                                    Total de juros ganhos, calculado como a diferença entre o montante final e o total investido
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="summary-item juros-reais text-center" style="background-color: #157347;">
-                                                <div class="content">
-                                                    <i class="bi bi-graph-down"></i>
-                                                    <h5>Juros Reais Acumulados</h5>                                                
-                                                    <p id="resumo-juros-reais">R$ 0,00</p>
-                                                </div>
-                                                <div class="explanation">
-                                                    Soma de todos os juros mensais ganhos após descontar a inflação, representando o ganho efetivo de poder de compra acumulado no período
-                                                </div>
+                                                <div class="metric-value" id="resumo-investido">R$ 0,00</div>
+                                                <div class="metric-subtitle">Valor inicial somado aos aportes</div>
                                             </div>
                                         </div>
 
-                                        <!-- Renda Passiva -->
-                                        <div class="col-md-6">
-                                            <div class="summary-item renda-passiva text-center" style="background-color: #6f42c1;">
-                                                <div class="content">
-                                                    <i class="bi bi-currency-exchange"></i>
-                                                    <h5>Renda Passiva Bruta</h5>
-                                                    <p id="resumo-renda-passiva-bruta">R$ 0,00</p>
+                                        <!-- Juros Brutos -->
+                                        <div class="col-md-4">
+                                            <div class="metric-card">
+                                                <div class="metric-header">
+                                                    <span class="metric-title">Juros Brutos</span>
+                                                    <i class="bi bi-graph-up-arrow text-warning metric-icon"></i>
                                                 </div>
-                                                <div class="explanation">
-                                                    Valor mensal que seu investimento gera em juros, sem considerar a inflação
-                                                </div>
+                                                <div class="metric-value text-success" id="resumo-juros-brutos">R$ 0,00</div>
+                                                <div class="metric-subtitle">Ganho gerado pelos juros compostos</div>
                                             </div>
                                         </div>
+
+                                        <!-- Imposto de Renda Estimado -->
+                                        <div class="col-md-4">
+                                            <div class="metric-card">
+                                                <div class="metric-header">
+                                                    <span class="metric-title">Imposto Estimado (IR)</span>
+                                                    <i class="bi bi-shield-slash text-danger metric-icon"></i>
+                                                </div>
+                                                <div class="metric-value text-danger" id="resumo-imposto-renda">R$ 0,00</div>
+                                                <div class="metric-subtitle">Incidência sobre o lucro acumulado</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Rentabilidade Nominal -->
+                                        <div class="col-md-4">
+                                            <div class="metric-card">
+                                                <div class="metric-header">
+                                                    <span class="metric-title">Rentabilidade Nominal</span>
+                                                    <i class="bi bi-percent text-info metric-icon"></i>
+                                                </div>
+                                                <div class="metric-value" id="resumo-rentabilidade">0,00%</div>
+                                                <div class="metric-subtitle">Retorno percentual bruto sobre o investido</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Rentabilidade Real -->
+                                        <div class="col-md-4">
+                                            <div class="metric-card">
+                                                <div class="metric-header">
+                                                    <span class="metric-title">Rentabilidade Real</span>
+                                                    <i class="bi bi-bullseye text-primary metric-icon"></i>
+                                                </div>
+                                                <div class="metric-value text-primary" id="resumo-rentabilidade-real">0,00%</div>
+                                                <div class="metric-subtitle">Ganho real acima da inflação do período</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Poder de Compra Real Corrigido -->
+                                        <div class="col-md-4">
+                                            <div class="metric-card">
+                                                <div class="metric-header">
+                                                    <span class="metric-title">Poder de Compra Real</span>
+                                                    <i class="bi bi-cart-check text-secondary metric-icon"></i>
+                                                </div>
+                                                <div class="metric-value" id="resumo-poder-compra">R$ 0,00</div>
+                                                <div class="metric-subtitle">Patrimônio deflacionado em valores de hoje</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Renda Passiva Bruta -->
                                         <div class="col-md-6">
-                                            <div class="summary-item renda-passiva text-center" style="background-color: #593196;">
-                                                <div class="content">
-                                                    <i class="bi bi-cash-coin"></i>
-                                                    <h5>Renda Passiva Líquida</h5>
-                                                    <p id="resumo-renda-passiva-liquida">R$ 0,00</p>
+                                            <div class="metric-card">
+                                                <div class="metric-header">
+                                                    <span class="metric-title">Renda Passiva Mensal (Bruta)</span>
+                                                    <i class="bi bi-cash-coin text-dark metric-icon"></i>
                                                 </div>
-                                                <div class="explanation">
-                                                    Valor mensal real que seu investimento gera em juros, já descontando a perda do poder de compra causada pela inflação
+                                                <div class="metric-value" id="resumo-renda-passiva-bruta">R$ 0,00</div>
+                                                <div class="metric-subtitle">Estimativa mensal sem reinvestimento</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Renda Passiva Líquida (Real) -->
+                                        <div class="col-md-6">
+                                            <div class="metric-card">
+                                                <div class="metric-header">
+                                                    <span class="metric-title">Renda Passiva Real / Mês</span>
+                                                    <i class="bi bi-stars text-primary metric-icon"></i>
                                                 </div>
+                                                <div class="metric-value text-primary" id="resumo-renda-passiva-liquida">R$ 0,00</div>
+                                                <div class="metric-subtitle">Retirada mensal sem perder poder de compra</div>
                                             </div>
                                         </div>
                                     </div>
@@ -442,52 +324,48 @@
 
                                 <!-- Gráfico de Linha -->
                                 <div class="tab-pane fade" id="graficoLinha" role="tabpanel">
-                                    <div class="grafico" id="graficoLinha-container">
-                                        <div class="tooltip-custom" id="tooltip-linha"></div>
-                                    </div>
+                                    <div class="grafico-wrapper" id="graficoLinha-container"></div>
                                 </div>
 
                                 <!-- Gráfico de Pizza -->
                                 <div class="tab-pane fade" id="graficoPizza" role="tabpanel">
-                                    <div class="grafico" id="graficoPizza-container">
-                                        <div class="tooltip-custom" id="tooltip-pizza"></div>
-                                    </div>
+                                    <div class="grafico-wrapper" id="graficoPizza-container"></div>
                                 </div>
 
                                 <!-- Tabela de Resultados -->
                                 <div class="tab-pane fade" id="conteudoTabela" role="tabpanel">
                                     <div class="table-responsive">
-                                        <table id="tabela" class="table table-striped table-hover table-stats">
-                                            <thead class="table-light">
+                                        <table id="tabela" class="table table-sm table-striped table-hover table-stats">
+                                            <thead>
                                                 <tr>
                                                     <th>Mês</th>
-                                                    <th>Aporte Mensal</th>
-                                                    <th>Aportes Acumulados</th>
-                                                    <th>Rendimento Mensal</th>
-                                                    <th>Rendimento Mensal - Inflação</th>
-                                                    <th>Patrimônio Acumulado + Juros</th>
-                                                    <th>Patrimônio Acumulado - Inflação</th>
+                                                    <th>Aporte</th>
+                                                    <th>Total Aportado</th>
+                                                    <th>Rendimento</th>
+                                                    <th>Rendimento Real</th>
+                                                    <th>Saldo Acumulado</th>
+                                                    <th>Poder de Compra</th>
                                                 </tr>
                                             </thead>
                                             <tbody></tbody>
                                         </table>
-                                        <div class="d-flex justify-content-between align-items-center mt-3">
-                                            <div class="text-muted">
+                                        <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                                            <div class="text-muted small">
                                                 Mostrando <span id="inicio-registros">1</span>-<span id="fim-registros">12</span> 
                                                 de <span id="total-registros">0</span> meses
                                             </div>
-                                            <div class="btn-group">
-                                                <button id="btn-primeira-pagina" class="btn btn-outline-primary">
+                                            <div class="btn-group btn-group-sm">
+                                                <button id="btn-primeira-pagina" class="btn btn-outline-primary" title="Primeira página">
                                                     <i class="bi bi-chevron-double-left"></i>
                                                 </button>
-                                                <button id="btn-pagina-anterior" class="btn btn-outline-primary">
+                                                <button id="btn-pagina-anterior" class="btn btn-outline-primary" title="Página anterior">
                                                     <i class="bi bi-chevron-left"></i>
                                                 </button>
                                                 <button id="btn-pagina-atual" class="btn btn-primary" disabled>1</button>
-                                                <button id="btn-proxima-pagina" class="btn btn-outline-primary">
+                                                <button id="btn-proxima-pagina" class="btn btn-outline-primary" title="Próxima página">
                                                     <i class="bi bi-chevron-right"></i>
                                                 </button>
-                                                <button id="btn-ultima-pagina" class="btn btn-outline-primary">
+                                                <button id="btn-ultima-pagina" class="btn btn-outline-primary" title="Última página">
                                                     <i class="bi bi-chevron-double-right"></i>
                                                 </button>
                                             </div>
@@ -501,37 +379,21 @@
             </div>
         </div>
 
-        <footer class="text-center mt-4 text-muted">
-            <p><small>Calculadora de Juros Compostos &copy; 2024</small></p>
+        <footer class="text-center mt-4 text-muted small">
+            <p>Calculadora de Juros Compostos &copy; 2026 &bull; Desenvolvida com HTML, CSS e JavaScript puro</p>
         </footer>
     </div>
 
-    <!-- Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Chart.js -->
+    <!-- Chart.js 4+ -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- IMask.js para formatação de números -->
+    <!-- IMask.js -->
     <script src="https://unpkg.com/imask"></script>
 
-    <!-- Módulos da aplicação -->
+    <!-- Módulo Principal -->
     <script type="module" src="js/app.js"></script>
-
-    <script>
-        // Inicializa todos os tooltips manualmente após o carregamento da página
-        document.addEventListener('DOMContentLoaded', function() {
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl, {
-                    trigger: 'hover focus',
-                    html: true,
-                    placement: 'top'
-                });
-            });
-        });
-    </script>
 </body>
-</html> 
+</html>

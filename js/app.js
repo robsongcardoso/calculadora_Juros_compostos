@@ -1,230 +1,193 @@
 import { Calculadora } from './components/Calculadora.js';
-import { TabelaResultados } from './components/TabelaResultados.js';
+import { extrairValorNumerico } from './utils/formatarMoeda.js';
 
-// Função para inicializar a aplicação
 function inicializarAplicacao() {
     try {
-        console.log('Iniciando a aplicação...');
-        
-        // Inicializa a calculadora e a tabela
         const calculadora = new Calculadora();
-        const tabela = new TabelaResultados();
-        
-        // Armazena a instância globalmente para debug
         window.calculadora = calculadora;
 
-        // Configura máscaras para campos monetários
-        const camposMonetarios = ['valorInicial', 'aporteMensal'];
-        const mascarasMonetarias = {};
-        
-        camposMonetarios.forEach(id => {
-            const element = document.getElementById(id);
-            const mascara = IMask(element, {
-                mask: 'R$ num',
-                blocks: {
-                    num: {
-                        mask: Number,
-                        thousandsSeparator: '.',
-                        radix: ',',
-                        scale: 2,
-                        padFractionalZeros: true,
-                        normalizeZeros: true,
-                        min: 0.01
-                    }
+        // Configuração do IMask para campos monetários (permite 0 ou superior)
+        const mascaras = {};
+        const configMascaraMonetaria = {
+            mask: 'R$ num',
+            blocks: {
+                num: {
+                    mask: Number,
+                    thousandsSeparator: '.',
+                    radix: ',',
+                    scale: 2,
+                    padFractionalZeros: true,
+                    normalizeZeros: true,
+                    min: 0,
+                    max: 999999999.99
                 }
-            });
-            
-            // Armazena a máscara para uso posterior
-            mascarasMonetarias[id] = mascara;
-            
-            // Adiciona evento de validação
-            element.addEventListener('change', () => {
-                const valor = mascara.unmaskedValue;
-                if (id === 'valorInicial') {
-                    // Valor inicial precisa ser maior que zero
-                    if (!valor || parseFloat(valor) <= 0) {
-                        element.classList.add('is-invalid');
-                    } else {
-                        element.classList.remove('is-invalid');
-                    }
-                } else {
-                    // Aporte mensal pode ser zero ou maior
-                    if (!valor || parseFloat(valor) < 0) {
-                        element.classList.add('is-invalid');
-                    } else {
-                        element.classList.remove('is-invalid');
-                    }
-                }
-            });
+            }
+        };
+
+        ['valorInicial', 'aporteMensal'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && typeof IMask !== 'undefined') {
+                mascaras[id] = IMask(el, configMascaraMonetaria);
+                el.addEventListener('input', () => el.classList.remove('is-invalid'));
+            }
         });
 
-        // Adiciona validação para campos numéricos
-        ['taxaJuros', 'inflacao', 'periodo'].forEach(id => {
-            const element = document.getElementById(id);
-            
-            // Previne entrada de caracteres não numéricos
-            element.addEventListener('keypress', (e) => {
-                // Permite números, ponto decimal, sinal negativo e teclas de controle
-                if (!/[\d.-]/.test(e.key) && !e.ctrlKey && !e.metaKey) {
-                    e.preventDefault();
-                }
-                
-                // Previne múltiplos pontos decimais
-                if (e.key === '.' && element.value.includes('.')) {
-                    e.preventDefault();
-                }
+        const campoPeriodo = document.getElementById('periodo');
+        const campoTipoPeriodo = document.getElementById('tipoPeriodo');
+        const campoTaxaJuros = document.getElementById('taxaJuros');
+        const campoTipoTaxa = document.getElementById('tipoTaxaJuros');
+        const campoInflacao = document.getElementById('inflacao');
+        const campoTipoIR = document.getElementById('tipoIR');
 
-                // Permite sinal negativo apenas no início
-                if (e.key === '-' && element.value !== '') {
-                    e.preventDefault();
-                }
-            });
-            
-            // Limpa caracteres inválidos no evento paste
-            element.addEventListener('paste', (e) => {
-                e.preventDefault();
-                const text = (e.clipboardData || window.clipboardData).getData('text');
-                const sanitized = text.replace(/[^\d.-]/g, '');
-                if (sanitized) {
-                    element.value = sanitized;
-                }
-            });
-
-            element.addEventListener('change', (e) => {
-                if (id === 'periodo') {
-                    // Para o período, mantém a validação de maior que zero
-                    const value = parseInt(e.target.value);
-                    if (!value || value <= 0) {
-                        e.target.classList.add('is-invalid');
-                    } else {
-                        e.target.classList.remove('is-invalid');
-                    }
-                } else {
-                    // Para taxa de juros e inflação, permite valores maiores ou iguais a zero
-                    const value = parseFloat(e.target.value);
-                    if (isNaN(value)) {
-                        e.target.classList.add('is-invalid');
-                    } else {
-                        e.target.classList.remove('is-invalid');
-                    }
-                }
-            });
+        [campoPeriodo, campoTaxaJuros, campoInflacao].forEach(el => {
+            if (el) el.addEventListener('input', () => el.classList.remove('is-invalid'));
         });
 
-        // Configura validação do período baseado no tipo
-        const periodoCampo = document.getElementById('periodo');
-        const tipoPeriodoCampo = document.getElementById('tipoPeriodo');
-        
-        function validarPeriodo() {
-            const valor = parseInt(periodoCampo.value);
-            const tipo = tipoPeriodoCampo.value;
-            
-            if (!valor || valor <= 0) {
-                periodoCampo.classList.add('is-invalid');
-                return false;
+        function validarCampos() {
+            let valido = true;
+
+            const valorInicial = mascaras['valorInicial'] 
+                ? parseFloat(mascaras['valorInicial'].unmaskedValue) || 0 
+                : extrairValorNumerico(document.getElementById('valorInicial').value);
+
+            const aporteMensal = mascaras['aporteMensal'] 
+                ? parseFloat(mascaras['aporteMensal'].unmaskedValue) || 0 
+                : extrairValorNumerico(document.getElementById('aporteMensal').value);
+
+            const periodo = parseInt(campoPeriodo.value, 10);
+            const tipoPeriodo = campoTipoPeriodo.value;
+            const taxaJuros = parseFloat(campoTaxaJuros.value);
+            const inflacao = parseFloat(campoInflacao.value);
+
+            // Validação de investimento mínimo (pelo menos um deve ser maior que zero)
+            if (valorInicial < 0 || isNaN(valorInicial)) {
+                document.getElementById('valorInicial').classList.add('is-invalid');
+                valido = false;
             }
-            
-            if (tipo === 'anos' && valor > 120) {
-                periodoCampo.classList.add('is-invalid');
-                return false;
+
+            if (aporteMensal < 0 || isNaN(aporteMensal)) {
+                document.getElementById('aporteMensal').classList.add('is-invalid');
+                valido = false;
             }
-            
-            if (tipo === 'meses' && valor > 1440) {
-                periodoCampo.classList.add('is-invalid');
-                return false;
+
+            if (valorInicial === 0 && aporteMensal === 0) {
+                document.getElementById('valorInicial').classList.add('is-invalid');
+                document.getElementById('aporteMensal').classList.add('is-invalid');
+                valido = false;
             }
-            
-            periodoCampo.classList.remove('is-invalid');
-            return true;
+
+            // Validação do período
+            if (!periodo || periodo <= 0 || isNaN(periodo)) {
+                campoPeriodo.classList.add('is-invalid');
+                valido = false;
+            } else if (tipoPeriodo === 'anos' && periodo > 120) {
+                campoPeriodo.classList.add('is-invalid');
+                valido = false;
+            } else if (tipoPeriodo === 'meses' && periodo > 1440) {
+                campoPeriodo.classList.add('is-invalid');
+                valido = false;
+            }
+
+            // Validação da taxa de juros (permite qualquer taxa numérica)
+            if (isNaN(taxaJuros)) {
+                campoTaxaJuros.classList.add('is-invalid');
+                valido = false;
+            }
+
+            // Validação da inflação (permite zero ou maior)
+            if (isNaN(inflacao) || inflacao < 0) {
+                campoInflacao.classList.add('is-invalid');
+                valido = false;
+            }
+
+            return valido;
         }
-        
-        periodoCampo.addEventListener('change', validarPeriodo);
-        tipoPeriodoCampo.addEventListener('change', validarPeriodo);
-        
-        // Configura o evento de cálculo
-        document.getElementById('calcular').addEventListener('click', () => {
-            try {
-                // Converte os valores para número
-                const valorInicial = parseFloat(mascarasMonetarias['valorInicial'].unmaskedValue) || 0;
-                const aporteMensal = parseFloat(mascarasMonetarias['aporteMensal'].unmaskedValue) || 0;
-                const periodo = parseInt(document.getElementById('periodo').value);
-                const taxaJuros = parseFloat(document.getElementById('taxaJuros').value);
-                const inflacao = parseFloat(document.getElementById('inflacao').value);
-                const tipoTaxaJuros = document.getElementById('tipoTaxaJuros').value;
-                const tipoPeriodo = document.getElementById('tipoPeriodo').value;
 
-                // Validação dos valores
-                let temErro = false;
+        function executarCalculo() {
+            if (!validarCampos()) return;
 
-                // Validação dos campos monetários
-                if (!valorInicial || valorInicial <= 0) {
-                    document.getElementById('valorInicial').classList.add('is-invalid');
-                    temErro = true;
-                }
-                
-                if (!aporteMensal || aporteMensal < 0) {
-                    document.getElementById('aporteMensal').classList.add('is-invalid');
-                    temErro = true;
-                }
-                
-                // Validação do período
-                if (!validarPeriodo()) {
-                    temErro = true;
-                }
-                
-                // Validação dos percentuais
-                if (!taxaJuros || taxaJuros <= 0) {
-                    document.getElementById('taxaJuros').classList.add('is-invalid');
-                    temErro = true;
-                }
-                
-                if (!inflacao || inflacao <= 0) {
-                    document.getElementById('inflacao').classList.add('is-invalid');
-                    temErro = true;
-                }
+            const valorInicial = mascaras['valorInicial'] 
+                ? parseFloat(mascaras['valorInicial'].unmaskedValue) || 0 
+                : extrairValorNumerico(document.getElementById('valorInicial').value);
 
-                if (temErro) {
-                    return;
-                }
+            const aporteMensal = mascaras['aporteMensal'] 
+                ? parseFloat(mascaras['aporteMensal'].unmaskedValue) || 0 
+                : extrairValorNumerico(document.getElementById('aporteMensal').value);
 
-                // Remove classes de validação
-                ['valorInicial', 'aporteMensal', 'periodo', 'taxaJuros', 'inflacao'].forEach(id => {
-                    document.getElementById(id).classList.remove('is-invalid');
-                });
+            const periodo = parseInt(campoPeriodo.value, 10);
+            const tipoPeriodo = campoTipoPeriodo.value;
+            const taxaJuros = parseFloat(campoTaxaJuros.value) || 0;
+            const tipoTaxaJuros = campoTipoTaxa.value;
+            const inflacao = parseFloat(campoInflacao.value) || 0;
+            const tipoIR = campoTipoIR.value;
 
-                // Calcula os resultados
-                const resultados = calculadora.calcular({
-                    valorInicial,
-                    aporteMensal,
-                    periodo,
-                    taxaJuros,
-                    tipoTaxaJuros,
-                    tipoPeriodo,
-                    inflacao
-                });
+            const resultados = calculadora.calcular({
+                valorInicial,
+                aporteMensal,
+                periodo,
+                tipoPeriodo,
+                taxaJuros,
+                tipoTaxaJuros,
+                inflacao,
+                tipoIR
+            });
 
-                console.log('Resultados calculados:', resultados);
+            calculadora.atualizarInterface(resultados);
+        }
 
-                // Atualiza a tabela com os resultados
-                tabela.atualizar(resultados, inflacao);
-                
-                // Mostra a seção de resultados
-                document.getElementById('explicacao').style.display = 'none';
-                document.getElementById('resultado').style.display = 'block';
-            } catch (erro) {
-                console.error('Erro ao calcular:', erro);
-                alert('Erro ao calcular. Verifique os valores informados.');
-            }
-        });
-        
-        console.log('Aplicação iniciada com sucesso!');
-        
-    } catch (erro) {
-        console.error('Erro ao inicializar a aplicação:', erro);
+        function preencherExemplo() {
+            if (mascaras['valorInicial']) mascaras['valorInicial'].value = '500000'; // R$ 5.000,00
+            if (mascaras['aporteMensal']) mascaras['aporteMensal'].value = '50000';  // R$ 500,00
+
+            campoTaxaJuros.value = '10.5';
+            campoTipoTaxa.value = 'anual';
+            campoInflacao.value = '4.0';
+            campoPeriodo.value = '5';
+            campoTipoPeriodo.value = 'anos';
+            campoTipoIR.value = 'regressivo';
+
+            ['valorInicial', 'aporteMensal', 'periodo', 'taxaJuros', 'inflacao'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('is-invalid');
+            });
+
+            executarCalculo();
+        }
+
+        function limparCampos() {
+            if (mascaras['valorInicial']) mascaras['valorInicial'].value = '';
+            if (mascaras['aporteMensal']) mascaras['aporteMensal'].value = '';
+
+            campoTaxaJuros.value = '';
+            campoInflacao.value = '';
+            campoPeriodo.value = '';
+
+            ['valorInicial', 'aporteMensal', 'periodo', 'taxaJuros', 'inflacao'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('is-invalid');
+            });
+
+            document.getElementById('explicacao').style.display = 'block';
+            document.getElementById('resultado').style.display = 'none';
+        }
+
+        // Eventos dos botões
+        const btnCalcular = document.getElementById('calcular');
+        const btnExemplo = document.getElementById('btn-exemplo');
+        const btnLimpar = document.getElementById('btn-limpar');
+
+        if (btnCalcular) btnCalcular.addEventListener('click', executarCalculo);
+        if (btnExemplo) btnExemplo.addEventListener('click', preencherExemplo);
+        if (btnLimpar) btnLimpar.addEventListener('click', limparCampos);
+
+        // Preenche com exemplo e calcula na inicialização para experiência imediata
+        preencherExemplo();
+
+    } catch (err) {
+        console.error('Falha ao inicializar calculadora:', err);
     }
 }
 
-// Aguarda o DOM estar completamente carregado
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', inicializarAplicacao);
 } else {

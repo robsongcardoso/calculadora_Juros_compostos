@@ -1,118 +1,150 @@
 import { formatarMoeda } from '../../utils/formatarMoeda.js';
 
 export class GraficoLinha {
-    constructor(containerId, tooltipId) {
+    constructor(containerId) {
         this.containerId = containerId;
-        this.tooltipId = tooltipId;
-    }
-
-    atualizar(dados) {
-        console.log('Atualizando gráfico de linha com dados:', dados);
-        this.desenhar(dados);
+        this.chart = null;
     }
 
     desenhar(dados) {
+        if (!dados || !dados.length) {
+            console.warn('Sem dados para renderizar no gráfico de linha');
+            return;
+        }
+
         const container = document.getElementById(this.containerId);
         if (!container) {
             console.error('Container do gráfico não encontrado:', this.containerId);
             return;
         }
 
-        const canvas = document.createElement('canvas');
-        canvas.width = container.offsetWidth;
-        canvas.height = container.offsetHeight;
-        
-        container.innerHTML = '';
-        container.appendChild(canvas);
-        
-        const ctx = canvas.getContext('2d');
-        const tooltip = document.getElementById(this.tooltipId);
-        
-        // Encontrar valor máximo para escala
-        const maxValor = Math.max(...dados.map(d => d.montanteAcumulado));
-        const escalaY = (canvas.height - 60) / maxValor;
-        
-        // Configurar estilo
-        ctx.strokeStyle = '#0d6efd';
-        ctx.lineWidth = 2;
-        ctx.fillStyle = 'rgba(13, 110, 253, 0.1)';
-        
-        // Desenhar eixos
-        ctx.beginPath();
-        ctx.moveTo(50, 10);
-        ctx.lineTo(50, canvas.height - 30);
-        ctx.lineTo(canvas.width - 20, canvas.height - 30);
-        ctx.stroke();
-        
-        // Desenhar linhas de grade e valores do eixo Y
-        const numLinhas = 5;
-        for (let i = 0; i <= numLinhas; i++) {
-            const y = canvas.height - 30 - (i * (canvas.height - 40) / numLinhas);
-            const valor = (maxValor * i / numLinhas);
-            
-            ctx.beginPath();
-            ctx.strokeStyle = '#e9ecef';
-            ctx.moveTo(50, y);
-            ctx.lineTo(canvas.width - 20, y);
-            ctx.stroke();
-            
-            ctx.fillStyle = '#6c757d';
-            ctx.font = '12px Arial';
-            ctx.textAlign = 'right';
-            ctx.fillText(formatarMoeda(valor), 45, y + 4);
+        // Destrói instância anterior se existir
+        if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
         }
-        
-        // Desenhar linha do gráfico
-        ctx.beginPath();
-        ctx.strokeStyle = '#0d6efd';
-        ctx.fillStyle = 'rgba(13, 110, 253, 0.1)';
-        
-        const escalaX = (canvas.width - 70) / (dados.length - 1);
-        
-        dados.forEach((dado, index) => {
-            const x = 50 + (index * escalaX);
-            const y = canvas.height - 30 - (dado.montanteAcumulado * escalaY);
-            
-            if (index === 0) {
-                ctx.moveTo(x, y);
-            } else {
-                ctx.lineTo(x, y);
+
+        container.innerHTML = '';
+        const canvas = document.createElement('canvas');
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        container.appendChild(canvas);
+
+        const labels = dados.map(d => {
+            if (d.mes % 12 === 0) {
+                return `Ano ${d.mes / 12} (Mês ${d.mes})`;
             }
+            return `Mês ${d.mes}`;
         });
-        
-        // Completar área do gráfico
-        ctx.lineTo(50 + ((dados.length - 1) * escalaX), canvas.height - 30);
-        ctx.lineTo(50, canvas.height - 30);
-        ctx.fill();
-        ctx.stroke();
-        
-        // Adicionar eventos para tooltip
-        canvas.addEventListener('mousemove', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            if (x > 50 && x < canvas.width - 20 && y > 10 && y < canvas.height - 30) {
-                const indice = Math.round((x - 50) / escalaX);
-                if (indice >= 0 && indice < dados.length) {
-                    const dado = dados[indice];
-                    tooltip.style.display = 'block';
-                    tooltip.style.left = (e.clientX - rect.left + 10) + 'px';
-                    tooltip.style.top = (e.clientY - rect.top - 30) + 'px';
-                    tooltip.innerHTML = `
-                        <div class="fw-bold">${dado.mes}º mês</div>
-                        <div>Montante: ${formatarMoeda(dado.montanteAcumulado)}</div>
-                        <div>Rendimento: ${formatarMoeda(dado.rendimentoMes)}</div>
-                        <div>Total Investido: ${formatarMoeda(dado.totalInvestido)}</div>
-                    `;
+
+        const totalInvestido = dados.map(d => d.totalInvestido);
+        const montanteTotal = dados.map(d => d.montanteAcumulado);
+        const montanteReal = dados.map(d => d.patrimonioRealAjustado !== undefined ? d.patrimonioRealAjustado : d.montanteAcumulado);
+
+        // Se Chart.js estiver disponível globalmente
+        if (typeof Chart === 'undefined') {
+            console.error('Chart.js não carregado');
+            container.innerHTML = '<div class="alert alert-warning text-center">Biblioteca de gráficos indisponível.</div>';
+            return;
+        }
+
+        this.chart = new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Total Acumulado (Bruto)',
+                        data: montanteTotal,
+                        borderColor: '#0d6efd',
+                        backgroundColor: 'rgba(13, 110, 253, 0.12)',
+                        borderWidth: 2.5,
+                        fill: true,
+                        tension: 0.25,
+                        pointRadius: dados.length > 48 ? 0 : 3,
+                        pointHoverRadius: 6
+                    },
+                    {
+                        label: 'Total Investido (Aportes)',
+                        data: totalInvestido,
+                        borderColor: '#198754',
+                        backgroundColor: 'rgba(25, 135, 84, 0.05)',
+                        borderWidth: 2,
+                        borderDash: [5, 4],
+                        fill: false,
+                        tension: 0.1,
+                        pointRadius: dados.length > 48 ? 0 : 2,
+                        pointHoverRadius: 5
+                    },
+                    {
+                        label: 'Poder de Compra Real (Após Inflação)',
+                        data: montanteReal,
+                        borderColor: '#e9a800',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.25,
+                        pointRadius: dados.length > 48 ? 0 : 2,
+                        pointHoverRadius: 5
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: { family: "'Segoe UI', sans-serif", size: 12, weight: '500' },
+                            usePointStyle: true,
+                            padding: 15
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(33, 37, 41, 0.95)',
+                        padding: 12,
+                        titleFont: { size: 13, weight: 'bold' },
+                        bodyFont: { size: 12 },
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                return ` ${context.dataset.label}: ${formatarMoeda(context.parsed.y)}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: {
+                            callback: function(value) {
+                                return formatarMoeda(value);
+                            },
+                            font: { size: 11 }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            maxTicksLimit: 12,
+                            font: { size: 11 }
+                        }
+                    }
                 }
-            } else {
-                tooltip.style.display = 'none';
             }
-        });
-        
-        canvas.addEventListener('mouseout', () => {
-            tooltip.style.display = 'none';
         });
     }
-} 
+
+    atualizar(dados) {
+        this.desenhar(dados);
+    }
+}
